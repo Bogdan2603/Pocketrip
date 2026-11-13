@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<!-- Bucăți comune tuturor paginilor -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · Pocketrip'">Pocketrip</title>
+    <link rel="stylesheet" th:href="@{/css/site.css}">
+</head>
+<body>
+<header th:fragment="nav" class="topbar">
+    <a class="brand" th:href="@{/waypoints}">Pocketrip</a>
+    <nav>
+        <a th:href="@{/waypoints}">Puncte din itinerariu</a>
+        <a class="button" th:href="@{/waypoints/create}">+ Punct nou</a>
+    </nav>
+</header>
+
+<div th:fragment="message" th:if="${message}" class="flash" th:text="${message}">Mesaj</div>
+</body>
+</html>

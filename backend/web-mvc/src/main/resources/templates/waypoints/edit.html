@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Editează punctul')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <p class="back"><a th:href="@{/waypoints/{id}(id=${waypoint.id})}">&larr; Înapoi la detalii</a></p>
+    <h1>Editează punctul</h1>
+
+    <!-- GET /waypoints/{id}/edit afișează formularul completat; Save trimite POST /waypoints/{id}/edit -->
+    <form th:action="@{/waypoints/{id}/edit(id=${waypoint.id})}" th:object="${waypoint}" method="post" novalidate>
+        <th:block th:replace="~{waypoints/form :: fields}"></th:block>
+        <div class="form-actions">
+            <button type="submit">Salvează modificările</button>
+            <a th:href="@{/waypoints/{id}(id=${waypoint.id})}">Renunță</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

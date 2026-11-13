@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Câmpurile formularului, folosite de create.html și edit.html.
+  Se inserează într-un <form th:object="${waypoint}">, de aceea *{...} se referă la WaypointViewModel.
+-->
+<th:block th:fragment="fields">
+    <fieldset>
+        <legend>Punct</legend>
+
+        <label for="name">Nume *</label>
+        <input id="name" type="text" th:field="*{name}" th:errorclass="invalid" maxlength="255"
+               placeholder="de exemplu: Colosseum">
+        <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Eroare</p>
+
+        <div class="row">
+            <div>
+                <label for="city">Oraș</label>
+                <input id="city" type="text" th:field="*{city}" th:errorclass="invalid" maxlength="100">
+                <p class="error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Eroare</p>
+            </div>
+            <div class="narrow">
+                <label for="countryCode">Țara (cod)</label>
+                <input id="countryCode" type="text" th:field="*{countryCode}" th:errorclass="invalid"
+                       maxlength="2" placeholder="IT">
+                <p class="error" th:if="${#fields.hasErrors('countryCode')}" th:errors="*{countryCode}">Eroare</p>
+            </div>
+        </div>
+    </fieldset>
+</th:block>
+</body>
+</html>

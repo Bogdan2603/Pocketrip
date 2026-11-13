@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${waypoint.name})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main th:object="${waypoint}">
+    <div th:replace="~{fragments/layout :: message}"></div>
+
+    <p class="back"><a th:href="@{/waypoints}">&larr; Înapoi la listă</a></p>
+    <div class="page-head">
+        <h1 th:text="*{name}">Colosseum</h1>
+        <a class="button" th:href="@{/waypoints/{id}/edit(id=*{id})}">Editează</a>
+    </div>
+
+    <dl class="details">
+        <dt>Id</dt>
+        <dd th:text="*{id}">1</dd>
+
+        <dt>Oraș, țară</dt>
+        <dd th:text="(*{city} ?: '-') + ', ' + (*{countryCode} ?: '-')">Roma, IT</dd>
+    </dl>
+</main>
+</body>
+</html>

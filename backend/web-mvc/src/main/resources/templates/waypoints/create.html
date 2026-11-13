@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Punct nou')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <p class="back"><a th:href="@{/waypoints}">&larr; Înapoi la listă</a></p>
+    <h1>Punct nou</h1>
+
+    <!-- GET /waypoints/create afișează formularul gol; Save trimite POST /waypoints/create -->
+    <form th:action="@{/waypoints/create}" th:object="${waypoint}" method="post" novalidate>
+        <th:block th:replace="~{waypoints/form :: fields}"></th:block>
+        <div class="form-actions">
+            <button type="submit">Salvează</button>
+            <a th:href="@{/waypoints}">Renunță</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

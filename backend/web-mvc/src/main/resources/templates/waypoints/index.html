@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Puncte din itinerariu')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: nav}"></header>
+<main>
+    <div th:replace="~{fragments/layout :: message}"></div>
+
+    <div class="page-head">
+        <h1>Puncte din itinerariu</h1>
+        <a class="button" th:href="@{/waypoints/create}">+ Adaugă un punct</a>
+    </div>
+
+    <p th:if="${#lists.isEmpty(waypoints)}" class="empty">Nu există încă niciun punct.</p>
+
+    <table th:unless="${#lists.isEmpty(waypoints)}">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nume</th>
+            <th>Oraș</th>
+            <th>Țara</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="w : ${waypoints}">
+            <td th:text="${w.id}">1</td>
+            <td th:text="${w.name}">Colosseum</td>
+            <td th:text="${w.city} ?: '-'">Roma</td>
+            <td th:text="${w.countryCode} ?: '-'">IT</td>
+            <td class="actions nowrap">
+                <a th:href="@{/waypoints/{id}(id=${w.id})}">Detalii</a>
+                <a th:href="@{/waypoints/{id}/edit(id=${w.id})}">Editează</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
