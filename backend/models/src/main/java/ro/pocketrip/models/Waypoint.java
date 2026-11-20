@@ -6,13 +6,12 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "waypoints")
-@Getter
-@Setter
+@Getter @Setter
 public class Waypoint
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
     private String city;

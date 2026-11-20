@@ -26,7 +26,8 @@ public class WaypointController
     public List<WaypointDto> getAll()
     {
         return waypointRepository.findAll()
-                .stream().map(mapper::toDto)
+                .stream()
+                .map(mapper::toDto)
                 .toList();
     }
 
@@ -38,7 +39,7 @@ public class WaypointController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WaypointDto> getById(@PathVariable long id)
+    public ResponseEntity<WaypointDto> getById(@PathVariable Long id)
     {
         return waypointRepository.findById(id)
                 .map(mapper::toDto)
@@ -47,7 +48,7 @@ public class WaypointController
     }
 
     @PutMapping("{id}")
-    public ResponseEntity <WaypointDto> update (@PathVariable long id, @RequestBody Waypoint dto)
+    public ResponseEntity <WaypointDto> update (@PathVariable Long id, @RequestBody Waypoint dto)
     {
         return waypointRepository.findById(id)
                 .map( point ->
@@ -61,7 +62,7 @@ public class WaypointController
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity <Void> delete(@PathVariable long id)
+    public ResponseEntity <Void> delete(@PathVariable Long id)
     {
         if(!waypointRepository.existsById(id))
             return ResponseEntity.notFound().build();

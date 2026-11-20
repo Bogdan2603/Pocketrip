@@ -1,0 +1,1 @@
+alter table generations drop column document_count;
