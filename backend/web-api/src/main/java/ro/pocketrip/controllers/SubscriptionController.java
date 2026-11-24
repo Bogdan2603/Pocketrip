@@ -3,6 +3,7 @@ package ro.pocketrip.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.pocketrip.dto.ChangePlanRequest;
 import ro.pocketrip.dto.SubscriptionDto;
 import ro.pocketrip.mappers.SubscriptionMapper;
 import ro.pocketrip.models.Subscription;
@@ -58,5 +59,13 @@ public class SubscriptionController
     {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/user/{userId}/change-plan")
+    public ResponseEntity<SubscriptionDto> changePlan(@PathVariable Long userId,
+                                                      @RequestBody ChangePlanRequest request)
+    {
+        Subscription nou = service.changePlan(userId, request.planId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDto(nou));
     }
 }

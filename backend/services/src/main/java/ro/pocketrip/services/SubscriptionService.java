@@ -1,6 +1,7 @@
 package ro.pocketrip.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.pocketrip.models.Plan;
 import ro.pocketrip.models.Subscription;
 import ro.pocketrip.models.User;
@@ -77,5 +78,24 @@ public class SubscriptionService
             existent.setStatus(nou.getStatus());
 
         return sub.save(existent);
+    }
+
+    @Transactional
+    public Subscription changePlan(Long userId, Long newPlanId)
+    {
+        User util = user.findById(userId).orElseThrow( () -> new UserNotFoundException(userId));
+        Plan pl = plan.findById(newPlanId).orElseThrow( () -> new PlanNotFoundException(newPlanId));
+
+        sub.findByUserIdAndStatus(userId, "ACTIVE")
+                .ifPresent(old -> old.setStatus("CANCELLED"));
+        sub.flush();
+
+        Subscription newOne = new Subscription();
+        newOne.setUser(util);
+        newOne.setPlan(pl);
+        newOne.setStartDate(LocalDate.now());
+        newOne.setStatus("ACTIVE");
+
+        return sub.save(newOne);
     }
 }
