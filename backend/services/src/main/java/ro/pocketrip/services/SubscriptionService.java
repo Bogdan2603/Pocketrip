@@ -80,8 +80,13 @@ public class SubscriptionService
     public Subscription update(Long id, Long userId, Long planId, Subscription nou)
     {
         Subscription existent  = sub.findById(id).orElseThrow( () -> new SubscriptionNotFoundException(id));
-        User util = user.findById(userId).orElseThrow(() -> new UserNotFoundException(id));
-        Plan pl = plan.findById(planId).orElseThrow(() -> new PlanNotFoundException(id));
+        User util = user.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        Plan pl = plan.findById(planId).orElseThrow(() -> new PlanNotFoundException(planId));
+
+        if(pl.getDeletedAt()!=null)
+        {
+            throw new PlanNotFoundException(planId);
+        }
 
         existent.setUser(util);
         existent.setPlan(pl);

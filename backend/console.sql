@@ -1,1 +1,1 @@
-select * from subscriptions;
+select version, description, success from flyway_schema_history order by installed_rank;

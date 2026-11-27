@@ -32,4 +32,11 @@ public class GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Operația încalcă o regulă a bazei de date (duplicat sau legătură existentă).");
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleOther(Exception ex) {
+        log.error("Eroare neasteptata", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("A aparut o eroare pe server.");
+    }
 }

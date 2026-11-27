@@ -48,10 +48,15 @@ public class UserService
     {
         User existent = userRepository.findById(id)
                 .orElseThrow( () -> new UserNotFoundException(id));
-        existent.setEmail(nou.getEmail());
-        existent.setRole(nou.getRole());
-        existent.setDisplayName(nou.getDisplayName());
-        existent.setPreferredLanguage(nou.getPreferredLanguage());
+
+        if(nou.getEmail()!=null)
+            existent.setEmail(nou.getEmail());
+        if(nou.getRole()!=null)
+            existent.setRole(nou.getRole());
+        if(nou.getDisplayName()!=null)
+            existent.setDisplayName(nou.getDisplayName());
+        if(nou.getPreferredLanguage()!=null)
+            existent.setPreferredLanguage(nou.getPreferredLanguage());
 
         return userRepository.save(existent);
     }
