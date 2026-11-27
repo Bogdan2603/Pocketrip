@@ -27,7 +27,6 @@ public class PlanController
     }
 
     @GetMapping
-    @Cacheable("plans")
     public List<PlanDto> getAll()
     {
         return planService.getAll()
@@ -45,7 +44,6 @@ public class PlanController
     }
 
     @PostMapping
-    @CacheEvict(value = "plans", allEntries = true)
     public ResponseEntity<PlanDto> create(@RequestBody PlanDto dto)
     {
         Plan saved = planService.create(mapper.toEntity(dto));
@@ -53,7 +51,6 @@ public class PlanController
     }
 
     @PutMapping("/{id}")
-    @CacheEvict(value = "plans", allEntries = true)
     public ResponseEntity<PlanDto> update(@PathVariable Long id, @RequestBody PlanDto dto)
     {
         Plan updated = planService.update(id, mapper.toEntity(dto));
@@ -61,7 +58,6 @@ public class PlanController
     }
 
     @DeleteMapping("/{id}")
-    @CacheEvict(value = "plans", allEntries = true)
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         planService.delete(id);

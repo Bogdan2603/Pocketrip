@@ -24,7 +24,6 @@ public class PricingController
     }
 
     @GetMapping
-    @Cacheable("plans")
     public List<PlanDto> getAllPlans()
     {
         return service.getAll().stream().map(mapper::toDto).toList();

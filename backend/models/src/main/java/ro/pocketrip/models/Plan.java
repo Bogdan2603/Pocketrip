@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name ="plans")
@@ -20,4 +21,5 @@ public class Plan
     private boolean mapEnabled;
     private boolean pdfExportEnabled;
     private BigDecimal extraPrice;
+    private LocalDateTime deletedAt;
 }

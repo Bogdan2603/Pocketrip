@@ -1,5 +1,8 @@
 package ro.pocketrip.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.pocketrip.models.Plan;
@@ -8,6 +11,7 @@ import ro.pocketrip.models.User;
 import ro.pocketrip.repositories.PlanRepository;
 import ro.pocketrip.repositories.SubscriptionRepository;
 import ro.pocketrip.repositories.UserRepository;
+import ro.pocketrip.services.events.PlanChangedEvent;
 import ro.pocketrip.services.exceptions.PlanNotFoundException;
 import ro.pocketrip.services.exceptions.SubscriptionNotFoundException;
 import ro.pocketrip.services.exceptions.UserNotFoundException;
@@ -23,11 +27,16 @@ public class SubscriptionService
     private final PlanRepository plan;
     private final SubscriptionRepository sub;
 
-    public SubscriptionService(UserRepository user, PlanRepository plan, SubscriptionRepository sub)
+    private final ApplicationEventPublisher events;
+
+    private static final Logger log = LoggerFactory.getLogger(SubscriptionService.class);
+
+    public SubscriptionService(UserRepository user, PlanRepository plan, SubscriptionRepository sub, ApplicationEventPublisher events)
     {
         this.user = user;
         this.plan = plan;
         this.sub = sub;
+        this.events = events;
     }
 
     public List<Subscription> getAll()
@@ -44,6 +53,11 @@ public class SubscriptionService
     {
         User util = user.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Plan pl = plan.findById(planId).orElseThrow(() -> new PlanNotFoundException(planId));
+
+        if(pl.getDeletedAt()!=null)
+        {
+            throw new PlanNotFoundException(planId);
+        }
 
         s.setUser(util);
         s.setPlan(pl);
@@ -86,8 +100,17 @@ public class SubscriptionService
         User util = user.findById(userId).orElseThrow( () -> new UserNotFoundException(userId));
         Plan pl = plan.findById(newPlanId).orElseThrow( () -> new PlanNotFoundException(newPlanId));
 
-        sub.findByUserIdAndStatus(userId, "ACTIVE")
-                .ifPresent(old -> old.setStatus("CANCELLED"));
+        if(pl.getDeletedAt()!=null)
+        {
+            throw new PlanNotFoundException(newPlanId);
+        }
+
+        Long oldPlanId = null;
+        Optional<Subscription> vechi = sub.findByUserIdAndStatus(userId, "ACTIVE");
+        if (vechi.isPresent()) {
+            oldPlanId = vechi.get().getPlan().getId();
+            vechi.get().setStatus("CANCELLED");
+        }
         sub.flush();
 
         Subscription newOne = new Subscription();
@@ -95,7 +118,10 @@ public class SubscriptionService
         newOne.setPlan(pl);
         newOne.setStartDate(LocalDate.now());
         newOne.setStatus("ACTIVE");
+        Subscription salvat = sub.save(newOne);
 
-        return sub.save(newOne);
+        log.info("User {} a schimbat planul pe {}", userId, newPlanId);
+        events.publishEvent(new PlanChangedEvent(userId, oldPlanId, newPlanId));
+        return salvat;
     }
 }

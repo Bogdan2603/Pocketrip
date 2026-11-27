@@ -1,5 +1,7 @@
 package ro.pocketrip.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.pocketrip.models.Generation;
@@ -21,6 +23,8 @@ public class GenerationService
     private final GenerationRepository generations;
     private final SubscriptionRepository subscriptions;
     private final UserRepository users;
+
+    private static final Logger log = LoggerFactory.getLogger(GenerationService.class);
 
     public GenerationService(GenerationRepository generations, SubscriptionRepository subscriptions, UserRepository users)
     {
@@ -67,15 +71,18 @@ public class GenerationService
         if( canGeneratForFree(userId))
         {
             Generation g = save(user, documentsCount, false);
+            log.info("Generare GRATUITA pentru user {} ({} documente)", userId, documentsCount);
             return new GenerationResult(GenerationOutcome.FREE, BigDecimal.ZERO, g.getId());
         }
 
         if(acceptExtra)
         {
             Generation g = save(user, documentsCount, true);
+            log.info("Generare EXTRA pentru user {} la pretul {}", userId, plan.getExtraPrice());
             return new GenerationResult(GenerationOutcome.EXTRA, plan.getExtraPrice(), g.getId());
         }
 
+        log.warn("Limita atinsa pentru user {}, generare refuzata", userId);
         return new GenerationResult(GenerationOutcome.LIMIT_REACHED, plan.getExtraPrice(), null);
     }
 

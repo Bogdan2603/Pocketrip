@@ -21,7 +21,7 @@ public class GlobalExceptionHandler
             UserNotFoundException.class,
         SubscriptionNotFoundException.class,
             NoActiveSubscriptionException.class})
-    public ResponseEntity<String> handleNotFound(PlanNotFoundException ex)
+    public ResponseEntity<String> handleNotFound(RuntimeException ex)
     {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
