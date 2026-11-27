@@ -1,26 +1,177 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* „Biroul” pe care stau foile. Modul întunecat e identitatea de bază. */
+:root,
+[data-theme="dark"] {
+  --desk: #141b2d;
+  --desk-raised: #1c2540;
+  --ink: #ffffff;
+  --ink-2: #c9d0e2;
+  --ink-3: #8a93ab;
+  --line: rgb(255 255 255 / 0.12);
+  --squiggle: #e8c547;
+  --highlight: #e8c547;
+  --wallpaper: #c9d0e2;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --desk: #eef1f6;
+  --desk-raised: #e2e7f0;
+  --ink: #141b2d;
+  --ink-2: #3f4657;
+  --ink-3: #6b7385;
+  --line: rgb(20 27 45 / 0.12);
+  --squiggle: #1f4fb5;
+  --highlight: #1f4fb5;
+  --wallpaper: #141b2d;
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-desk: var(--desk);
+  --color-desk-raised: var(--desk-raised);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-highlight: var(--highlight);
+
+  /* Foile albe arată la fel în ambele teme. */
+  --color-sheet: #ffffff;
+  --color-sheet-ink: #111111;
+  --color-sheet-muted: #5b6273;
+  --color-sheet-line: #e3e6ee;
+  --color-sheet-soft: #f4f6fa;
+
+  --color-sun: #e8c547;
+  --color-sun-hover: #f1d468;
+  --color-route: #1f4fb5;
+  --color-ok: #1e8e5a;
+  --color-wait: #b97c0c;
+  --color-bad: #c8372d;
+
+  --color-cat-flight: #1f4fb5;
+  --color-cat-stay: #7a4fc9;
+  --color-cat-food: #e07b2e;
+  --color-cat-sight: #1e8e5a;
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-hand: var(--font-caveat), cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--desk);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  ::selection {
+    background: #e8c547;
+    color: #111;
+  }
+
+  :focus-visible {
+    outline: 2px solid #1f4fb5;
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Foaie albă pe birou */
+  .sheet {
+    background: #fff;
+    color: #111;
+    border-radius: 14px;
+    box-shadow:
+      0 0 0 1px rgb(17 17 17 / 0.06),
+      0 1px 2px rgb(17 17 17 / 0.06),
+      0 18px 40px -24px rgb(8 12 24 / 0.55);
+  }
+
+  /* Subliniere ondulată „trasă” sub link la hover; pagina curentă o are permanent. */
+  .squiggle {
+    position: relative;
+    display: inline-block;
+  }
+  .squiggle::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    height: 6px;
+    background: var(--squiggle);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3 Q3 0 6 3 T12 3' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E")
+      repeat-x 0 0 / 12px 6px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3 Q3 0 6 3 T12 3' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E")
+      repeat-x 0 0 / 12px 6px;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .squiggle:hover::after,
+  .squiggle[aria-current="page"]::after {
+    clip-path: inset(0 0 0 0);
+  }
+  .squiggle-sheet::after {
+    background: #1f4fb5;
+  }
+
+  /* Separator punctat între linkurile din meniu (un punct mic, centrat între ele) */
+  .dot-sep > * + *::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 14px 3px 14px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.35;
+    vertical-align: middle;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .dropzone-border {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23A8B0C2' stroke-width='2' stroke-dasharray='7 7' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+  .dropzone-border[data-active="true"] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%231F4FB5' stroke-width='2' stroke-dasharray='7 7' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

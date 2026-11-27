@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
+// Backend-ul Spring (modulul web-api). Cererile către /api/* sunt trimise mai departe
+// de serverul Next, așa că browserul nu are nevoie de CORS.
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8080";
+
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     agentFeedback: true,
   },
@@ -14,6 +17,14 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${BACKEND_URL}/api/:path*`,
+      },
+    ];
   },
 };
 
